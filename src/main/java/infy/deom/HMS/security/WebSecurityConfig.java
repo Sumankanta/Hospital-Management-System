@@ -1,5 +1,6 @@
 package infy.deom.HMS.security;
 
+import infy.deom.HMS.entity.Type.PermissionType;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
+import static infy.deom.HMS.entity.Type.PermissionType.*;
 import static infy.deom.HMS.entity.Type.RoleType.*;
 
 @Configuration
@@ -46,6 +49,7 @@ public class WebSecurityConfig {
 //                        .requestMatchers("/admin/**").authenticated()
 //                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/admin/**").hasRole(ADMIN.name())
+                                .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAnyAuthority(APPOINTMENT_DELETE.name(), USER_MANAGE.name())
                         .requestMatchers("/doctors/**").hasAnyRole(DOCTOR.name(), ADMIN.name())
                                 .anyRequest().authenticated()
                 )
